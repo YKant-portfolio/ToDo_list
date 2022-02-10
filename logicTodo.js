@@ -15,23 +15,20 @@ const logicTodo = () => {
 
 	// Basic Logic
 	function getUserName(userId) {
-		const user = users.find((user) => user.id === userId); // ищем только те id которые совпадают с userId
-
-		return user.name; // возвращаем имя пользователя с тем id которое совпало с userId
+		const user = users.find((user) => user.id === userId);
+		return user.name;
 	}
 
-	function printTodo({ id, userId, title, completed }) { // в todo идет подсчет 1-20 id это userId = 1, с 21-40 id это 2 userId
+	function printTodo({ id, userId, title, completed }) {
 		const li = document.createElement('li');
 		li.className = 'todo-item';
 		li.dataset.id = id;
-		li.innerHTML = `<span>${title} <em>by</em> <strong>${getUserName(userId)}</strong></span>`;
+		li.innerHTML = `<span>${title} <em> by </em> <strong>${getUserName(userId)}</strong></span>`;
 
 		const status = document.createElement('input');
 		status.type = 'checkbox';
 		status.checked = completed;
 		status.addEventListener('change', handleTodoChange)
-		// console.log(status.checked);
-
 
 		const close = document.createElement('span');
 		close.innerHTML = '&times;';
@@ -45,22 +42,17 @@ const logicTodo = () => {
 	}
 
 	function createUserOption(user) {
-		// console.log(user);
-
 		const option = document.createElement('option');
 		option.value = user.id;
 		option.innerText = user.name;
-
 		userSelect.append(option);
 	}
 
 	function removeTodo(todoId) {
-		todos = todos.filter(todo => todo.id !== todoId); // проверка поиск нужного элемента
-
+		todos = todos.filter(todo => todo.id !== todoId);
 		const todo = todoList.querySelector(`[data-id="${todoId}"]`);
 		todo.querySelector('input').removeEventListener('change', handleTodoChange);
 		todo.querySelector('.close').removeEventListener('click', handleClose);
-
 		todo.remove();
 	}
 
@@ -69,8 +61,6 @@ const logicTodo = () => {
 	function initApp() {
 		Promise.all([getAllTodos(), getAllUsers()]).then(values => {
 			[todos, users] = values;
-
-			// отправить в разметку
 			todos.forEach(todo => printTodo(todo));
 			users.forEach(user => createUserOption(user))
 		});
@@ -78,7 +68,6 @@ const logicTodo = () => {
 
 	function handleSubmit(event) {
 		event.preventDefault();
-
 		createTodo({
 			"userId": Number(form.user.value),
 			"title": form.todo.value,
@@ -91,15 +80,12 @@ const logicTodo = () => {
 		const target = event.target;
 		const todoID = target.parentElement.dataset.id;
 		const complited = target.checked;
-
 		toggleTodoComplete(todoID, complited);
 	}
-
 	function handleClose() {
 		const todoId = this.parentElement.dataset.id;
 		deleteTodo(todoId);
 	}
-
 	function alertError(error) {
 		modals(error.message);
 	}
@@ -119,7 +105,6 @@ const logicTodo = () => {
 		try {
 			const response = await fetch('https://jsonplaceholder.typicode.com/users?_limit=7');
 			const data = await response.json();
-
 			return data;
 		} catch {
 			alertError(error);
@@ -136,9 +121,7 @@ const logicTodo = () => {
 				},
 			});
 			const newTodo = await response.json();
-
 			console.log(newTodo);
-
 			printTodo(newTodo);
 		} catch (error) {
 			alertError(error);
@@ -154,10 +137,6 @@ const logicTodo = () => {
 					'Content-Type': 'application/json'
 				},
 			});
-			// resp = await response.json();
-			// console.log(resp.completed);
-
-
 			if (!response.ok) {
 				// Error
 				throw new Error("Проблема с подключению к серверу ! поробуйте зайти позже");
@@ -175,14 +154,11 @@ const logicTodo = () => {
 					'Content-Type': 'application/json'
 				},
 			});
-
 			if (response.ok) {
-				// удалить задачу 
 				removeTodo(todoId)
 			} else {
 				throw new Error("Ошибка: Нет соеденения с сервером! поробуйте зайти позже");
 			}
-
 		} catch (error) {
 			alertError(error);
 		}
