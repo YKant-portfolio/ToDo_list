@@ -121,7 +121,10 @@ const logicTodo = () => {
 				},
 			});
 			const newTodo = await response.json();
+			console.log('Новая задача создана');
 			console.log(newTodo);
+
+
 			printTodo(newTodo);
 		} catch (error) {
 			alertError(error);
@@ -137,6 +140,10 @@ const logicTodo = () => {
 					'Content-Type': 'application/json'
 				},
 			});
+			const data = await response.json();
+			console.log('Статус задачи изменен!');
+			console.log(data);
+
 			if (!response.ok) {
 				// Error
 				throw new Error("Проблема с подключению к серверу ! поробуйте зайти позже");
@@ -156,6 +163,8 @@ const logicTodo = () => {
 			});
 			if (response.ok) {
 				removeTodo(todoId)
+				const data = await response.json();
+				console.log("задача и пользователь удалены корректно");
 			} else {
 				throw new Error("Ошибка: Нет соеденения с сервером! поробуйте зайти позже");
 			}
